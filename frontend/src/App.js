@@ -6,15 +6,14 @@ import { FaSort, FaSortUp, FaSortDown } from 'react-icons/fa';
 
 function App() {
   const [bookings, setBookings] = useState([]);
-  const [sortBy, setSortBy] = useState('default');
 
   useEffect(() => {
     const fetchBookings = async () => {
-      const response = await axios.get(`http://localhost:8000/api/bookings/?sort_by=${sortBy}`);
+      const response = await axios.get('http://localhost:8000/api/bookings/?sort_by=default');
       setBookings(response.data);
     };
     fetchBookings();
-  }, [sortBy]);
+  }, []);
 
   const columns = useMemo(
     () => [
@@ -37,7 +36,7 @@ function App() {
 
   return (
     <div className="min-vh-100 bg-light py-5">
-      <div className="container">
+      <div className="container position-relative">
         <div className="row justify-content-center">
           <div className="col-12 col-lg-10">
             <div className="text-center mb-5">
