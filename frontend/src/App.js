@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
 import { useTable, useSortBy } from 'react-table';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { FaSort, FaSortUp, FaSortDown } from 'react-icons/fa';
 
 function App() {
   const [bookings, setBookings] = useState([]);
@@ -9,7 +10,7 @@ function App() {
 
   useEffect(() => {
     const fetchBookings = async () => {
-      const response = await axios.get('http://localhost:8000/api/bookings/?sort_by=${sortBy}');
+      const response = await axios.get(`http://localhost:8000/api/bookings/?sort_by=${sortBy}`);
       setBookings(response.data);
     };
     fetchBookings();
@@ -35,41 +36,57 @@ function App() {
   } = useTable({ columns, data: bookings }, useSortBy);
 
   return (
-    <div className="container mt-5">
-      <div className="row justify-content-center">
-        <div className="col-12 col-lg-10">
-          <h1 className="text-center mb-4">Bookings</h1>
-          <div className="card shadow">
-            <div className="card-body">
-              <div className="table-responsive">
-                <table {...getTableProps()} className="table table-striped table-hover">
-                  <thead className="thead-dark">
-                    {headerGroups.map(headerGroup => (
-                      <tr {...headerGroup.getHeaderGroupProps()}>
-                        {headerGroup.headers.map(column => (
-                          <th {...column.getHeaderProps(column.getSortByToggleProps())} className="text-center">
-                            {column.render('Header')}
-                            <span>
-                              {column.isSorted ? (column.isSortedDesc ? ' 🔽' : ' 🔼') : ''}
-                            </span>
-                          </th>
-                        ))}
-                      </tr>
-                    ))}
-                  </thead>
-                  <tbody {...getTableBodyProps()}>
-                    {rows.map(row => {
-                      prepareRow(row)
-                      return (
-                        <tr {...row.getRowProps()}>
-                          {row.cells.map(cell => {
-                            return <td {...cell.getCellProps()} className="text-center">{cell.render('Cell')}</td>
-                          })}
+    <div className="min-vh-100 bg-light py-5">
+      <div className="container">
+        <div className="row justify-content-center">
+          <div className="col-12 col-lg-10">
+            <div className="text-center mb-5">
+              <h1 className="display-4 text-primary fw-bold">Booking Management</h1>
+              <p className="lead text-muted">View and manage all your bookings in one place</p>
+            </div>
+            <div className="card shadow-lg rounded-3 overflow-hidden">
+              <div className="card-header bg-primary text-white">
+                <h2 className="h4 mb-0">Bookings Overview</h2>
+              </div>
+              <div className="card-body p-0">
+                <div className="table-responsive">
+                  <table {...getTableProps()} className="table table-hover mb-0">
+                    <thead className="table-light">
+                      {headerGroups.map(headerGroup => (
+                        <tr {...headerGroup.getHeaderGroupProps()}>
+                          {headerGroup.headers.map(column => (
+                            <th
+                              {...column.getHeaderProps(column.getSortByToggleProps())}
+                              className="text-center py-3"
+                              style={{cursor: 'pointer'}}
+                            >
+                              {column.render('Header')}
+                              <span className="ms-2">
+                                {column.isSorted
+                                  ? column.isSortedDesc
+                                    ? <FaSortDown />
+                                    : <FaSortUp />
+                                  : <FaSort />}
+                              </span>
+                            </th>
+                          ))}
                         </tr>
-                      )
-                    })}
-                  </tbody>
-                </table>
+                      ))}
+                    </thead>
+                    <tbody {...getTableBodyProps()}>
+                      {rows.map(row => {
+                        prepareRow(row)
+                        return (
+                          <tr {...row.getRowProps()}>
+                            {row.cells.map(cell => {
+                              return <td {...cell.getCellProps()} className="text-center py-3">{cell.render('Cell')}</td>
+                            })}
+                          </tr>
+                        )
+                      })}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
           </div>
