@@ -26,8 +26,8 @@ Before you begin, ensure you have met the following requirements:
     POSTGRES_DB=.....
     POSTGRES_USER=.....
     POSTGRES_PASSWORD=.....
-    POSTGRES_PORT=....
-    DEBUG=...
+    POSTGRES_PORT=5432
+    DEBUG=True
     ADMIN_USERNAME=admin
     ADMIN_EMAIL=admin@example.com
     ADMIN_PASSWORD=admin123
@@ -53,7 +53,7 @@ Before you begin, ensure you have met the following requirements:
 
 - It will also create some sample flat and booking data.
 
-- To access the Django admin panel, navigate to `http://localhost:3000/admin` and log in using the admin credentials.
+- To access the Django admin panel, navigate to `http://localhost:8000/admin` and log in using the admin credentials.
 
 ## Stopping the Containers
 
