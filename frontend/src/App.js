@@ -36,10 +36,6 @@ function App() {
   return (
     <div>
       <h1>Bookings</h1>
-      <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
-        <option value="default">Default (Flat ID, Booking Checkin)</option>
-        <option value="checkin">Booking Checkin</option>
-      </select>
       <table {...getTableProps()}>
         <thead>
           {headerGroups.map(headerGroup => (
