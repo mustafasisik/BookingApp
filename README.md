@@ -43,14 +43,6 @@ Before you begin, ensure you have met the following requirements:
 
     This command will build the Docker images and start the containers in detached mode.
 
-4. **Install frontend dependencies:**
-
-    Navigate to the frontend directory and install the required packages:
-
-    ```sh
-    cd frontend
-    npm install axios react-table
-    ```
 
 ## Usage
 
