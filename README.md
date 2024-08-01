@@ -61,3 +61,13 @@ To stop the running containers, navigate to the root directory of the project an
 
 ```sh
 docker-compose down
+```
+
+
+## Test app
+
+```sh
+docker exec -it backend /bin/bash
+cd /usr/src/backend
+python manage.py test api
+```

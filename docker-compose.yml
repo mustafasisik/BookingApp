@@ -10,9 +10,9 @@ services:
     env_file:
       - .env
     volumes:
-      - ./backend:/app
-      - static_volume:/usr/src/solutionshub/static
-      - media_volume:/usr/src/solutionshub/media
+      - ./backend:/usr/src/backend
+      - static_volume:/usr/src/backend/static
+      - media_volume:/usr/src/backend/media
     ports:
       - "8000:8000"
     environment:
@@ -35,7 +35,6 @@ services:
     tty: true
     depends_on:
       - backend
-
 
   db:
     container_name: postgresql

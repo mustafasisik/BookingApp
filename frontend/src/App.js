@@ -1,38 +1,39 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useTable, useSortBy } from 'react-table';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import { FaSort, FaSortUp, FaSortDown } from 'react-icons/fa';
+import BookingTable from './components/BookingTable';
+import Pagination from './components/Pagination';
 
 function App() {
   const [bookings, setBookings] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const pageSize = 10; // You can adjust this as needed
+
+  const fetchBookings = async (pageNumber) => {
+    try {
+      const response = await axios.get(`http://localhost:8000/api/bookings/?page=${pageNumber}`);
+      setBookings(response.data.results);
+      setTotalPages(Math.ceil(response.data.count / pageSize));
+      setLoading(false);
+    } catch (err) {
+      setError(err);
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchBookings = async () => {
-      const response = await axios.get('http://localhost:8000/api/bookings/?sort_by=default');
-      setBookings(response.data);
-    };
-    fetchBookings();
-  }, []);
+    fetchBookings(page);
+  }, [page]);
 
-  const columns = useMemo(
-    () => [
-      { Header: 'Flat name', accessor: 'flat_name' },
-      { Header: 'ID', accessor: 'id' },
-      { Header: 'Checkin', accessor: 'checkin' },
-      { Header: 'Checkout', accessor: 'checkout' },
-      { Header: 'Previous booking ID', accessor: 'previous_booking_id' },
-    ],
-    []
-  );
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
-  const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    rows,
-    prepareRow,
-  } = useTable({ columns, data: bookings }, useSortBy);
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  }
 
   return (
     <div className="min-vh-100 bg-light py-5">
@@ -48,44 +49,14 @@ function App() {
                 <h2 className="h4 mb-0">Bookings Overview</h2>
               </div>
               <div className="card-body p-0">
-                <div className="table-responsive">
-                  <table {...getTableProps()} className="table table-hover mb-0">
-                    <thead className="table-light">
-                      {headerGroups.map(headerGroup => (
-                        <tr {...headerGroup.getHeaderGroupProps()}>
-                          {headerGroup.headers.map(column => (
-                            <th
-                              {...column.getHeaderProps(column.getSortByToggleProps())}
-                              className="text-center py-3"
-                              style={{cursor: 'pointer'}}
-                            >
-                              {column.render('Header')}
-                              <span className="ms-2">
-                                {column.isSorted
-                                  ? column.isSortedDesc
-                                    ? <FaSortDown />
-                                    : <FaSortUp />
-                                  : <FaSort />}
-                              </span>
-                            </th>
-                          ))}
-                        </tr>
-                      ))}
-                    </thead>
-                    <tbody {...getTableBodyProps()}>
-                      {rows.map(row => {
-                        prepareRow(row)
-                        return (
-                          <tr {...row.getRowProps()}>
-                            {row.cells.map(cell => {
-                              return <td {...cell.getCellProps()} className="text-center py-3">{cell.render('Cell')}</td>
-                            })}
-                          </tr>
-                        )
-                      })}
-                    </tbody>
-                  </table>
-                </div>
+                <BookingTable bookings={bookings} />
+              </div>
+              <div className="card-footer">
+                <Pagination
+                  currentPage={page}
+                  totalPages={totalPages}
+                  onPageChange={setPage}
+                />
               </div>
             </div>
           </div>
